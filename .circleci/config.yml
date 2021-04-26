@@ -1,0 +1,29 @@
+version: 2.1
+
+_run_anchors:
+  install-bazel: &install-bazel
+    name: Install Bazel
+    command: |
+      sudo apt-get install pkg-config zip g++ zlib1g-dev unzip python
+      bazelversion=$(<~/root/.bazelversion)
+      echo "Bazel version is $bazelversion"
+      wget https://github.com/bazelbuild/bazel/releases/download/$bazelversion/bazel-$bazelversion-installer-linux-x86_64.sh
+      chmod +x bazel-$bazelversion-installer-linux-x86_64.sh
+      ./bazel-$bazelversion-installer-linux-x86_64.sh --user
+  configure-bazel: &configure-bazel
+    name: Configure Bazel
+    command: |
+      echo $GCLOUD_CREDS_JSON > ~/root/google_credentials.json
+      sudo ln -s /bin/true /usr/local/bin/true
+jobs:
+  build:
+    machine:
+      image: ubuntu-1604:202101-01
+    working_directory: ~/root
+    steps:
+      - checkout
+      - run: *install-bazel
+      - run: *configure-bazel
+      - run:
+          name: Test
+          command: bazel --bazelrc=.circleci/.bazelrc test ...

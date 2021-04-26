@@ -1,0 +1,8 @@
+# https://docs.bazel.build/versions/master/remote-caching.html#run-bazel-using-the-remote-cache
+build --remote_http_cache=https://storage.googleapis.com/fivetran-simple-sandbox-bazel-remote-cache/engflow
+build --google_credentials=google_credentials.json
+build --java_toolchain=@bazel_tools//tools/jdk:toolchain_hostjdk8
+build --host_java_toolchain=@bazel_tools//tools/jdk:toolchain_hostjdk8
+build --repo_env=JAVA_HOME=../bazel_tools/jdk
+build --javabase=@openjdk8u242_linux_archive//:runtime
+build --host_javabase=@openjdk8u242_linux_archive//:runtime
